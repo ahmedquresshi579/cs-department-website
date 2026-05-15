@@ -1,0 +1,56 @@
+name: CI - Production
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Lint HTML and CSS
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install HTMLHint
+        run: npm install -g htmlhint
+
+      - name: Install stylelint
+        run: npm install -g stylelint stylelint-config-standard
+
+      - name: Create stylelint config
+        run: |
+          echo '{"extends":"stylelint-config-standard","rules":{"no-descending-specificity":null,"alpha-value-notation":"number","color-function-notation":"legacy"}}' > .stylelintrc.json
+
+      - name: Run HTMLHint on all pages
+        run: htmlhint src/*.html
+
+      - name: Run stylelint on CSS
+        run: stylelint src/css/*.css
+
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    environment: production
+    needs: lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t cs-department-website:production .
+
+      - name: Verify image exists
+        run: docker images cs-department-website
