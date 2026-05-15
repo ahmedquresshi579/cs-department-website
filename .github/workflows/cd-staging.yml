@@ -1,0 +1,28 @@
+name: CD - Staging
+
+on:
+  workflow_run:
+    workflows:
+      - "CI - Staging"
+    types:
+      - completed
+    branches:
+      - release
+
+jobs:
+  deploy:
+    name: Deploy to Render (Staging)
+    runs-on: ubuntu-latest
+    environment: staging
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Trigger Render Deploy
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys
+
+      - name: Confirm Deploy Triggered
+        run: echo "Deployment triggered for Staging environment"
