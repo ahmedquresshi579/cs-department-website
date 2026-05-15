@@ -1,0 +1,23 @@
+name: CD - Development
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    name: Deploy to Render (Development)
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Trigger Render Deploy
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys
+
+      - name: Confirm Deploy Triggered
+        run: echo "Deployment triggered for Development environment"
