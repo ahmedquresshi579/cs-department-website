@@ -1,11 +1,7 @@
 name: CD - Staging
 
 on:
-  workflow_run:
-    workflows:
-      - "CI - Staging"
-    types:
-      - completed
+  push:
     branches:
       - release
 
@@ -14,7 +10,6 @@ jobs:
     name: Deploy to Render (Staging)
     runs-on: ubuntu-latest
     environment: staging
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Trigger Render Deploy

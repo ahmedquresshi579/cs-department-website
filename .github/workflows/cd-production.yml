@@ -1,11 +1,7 @@
 name: CD - Production
 
 on:
-  workflow_run:
-    workflows:
-      - "CI - Production"
-    types:
-      - completed
+  push:
     branches:
       - main
 
@@ -14,7 +10,6 @@ jobs:
     name: Deploy to Render (Production)
     runs-on: ubuntu-latest
     environment: production
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Trigger Render Deploy
