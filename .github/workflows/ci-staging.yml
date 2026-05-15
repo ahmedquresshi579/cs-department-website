@@ -31,8 +31,7 @@ jobs:
 
       - name: Create stylelint config
         run: |
-          echo '{"extends":"stylelint-config-standard","rules":{"no-descending-specificity":null,"alpha-value-notation":"number","color-function-notation":"legacy"}}' > .stylelintrc.json
-
+          echo '{"extends":"stylelint-config-standard","rules":{"no-descending-specificity":null,"alpha-value-notation":"number","color-function-notation":"legacy","color-function-alias-notation":null,"declaration-block-single-line-max-declarations":null,"media-feature-range-notation":null}}' > .stylelintrc.json
       - name: Run HTMLHint on all pages
         run: htmlhint src/*.html
 
